@@ -38,7 +38,7 @@ export interface TinkoffInvestApiOptions {
 const defaults: Required<Pick<TinkoffInvestApiOptions, 'appName' | 'endpoint' | 'channelOptions' >> = {
   endpoint: 'invest-public-api.tinkoff.ru:443',
   appName: '',
-  // See: https://github.com/vitalets/tinkoff-invest-api/issues/23
+  // Increased limits allow working with large API payloads.
   channelOptions: {
     'grpc.max_receive_message_length': 1024 * 1024 * 100,
     'grpc.max_send_message_length': 1024 * 1024 * 100,

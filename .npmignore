@@ -1,0 +1,11 @@
+investAPI-main/
+protoc-dir/
+protos.pb
+proto.zip
+scripts/
+test/
+FORK_REPORT.md
+.gitignore
+tsconfig*.json
+.eslintrc*
+.cache

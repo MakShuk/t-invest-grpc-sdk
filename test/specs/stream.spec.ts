@@ -1,5 +1,5 @@
 import EventEmitter, { on } from 'node:events';
-import { Candle, SubscribeCandlesRequest, MarketDataResponse, SubscriptionInterval, SubscriptionStatus } from '../../src/generated/marketdata.js';
+import { Candle, SubscribeCandlesRequest, MarketDataResponse, SubscriptionAction, SubscriptionInterval, SubscriptionStatus } from '../../src/generated/marketdata.js';
 import { MarketStream, WithoutAction } from '../../src/stream/market.js';
 import { omits } from '../helpers';
 
@@ -21,7 +21,7 @@ describe('stream', () => {
     subscribeCandlesResponse: {
       trackingId: 'xxx',
       candlesSubscriptions: [
-        { streamId, subscriptionId, figi, instrumentUid: figi, interval, subscriptionStatus: SubscriptionStatus.SUBSCRIPTION_STATUS_SUCCESS, waitingClose: false, candleSourceType: 0 }
+        { streamId, subscriptionId, figi, instrumentUid: figi, interval, subscriptionStatus: SubscriptionStatus.SUBSCRIPTION_STATUS_SUCCESS, waitingClose: false, candleSourceType: 0, subscriptionAction: SubscriptionAction.SUBSCRIPTION_ACTION_SUBSCRIBE, ticker: '', classCode: '' }
       ]
     }
   };
@@ -75,18 +75,18 @@ describe('stream', () => {
     ]);
 
     // нужный figi и interval
-    const ownFigiAndInterval = { candle: { streamId, subscriptionId, figi, instrumentUid: figi, interval, volume: 1, waitingClose: false, candleSourceType: 0 } };
+    const ownFigiAndInterval = { candle: { streamId, subscriptionId, figi, instrumentUid: figi, interval, volume: 1, waitingClose: false, candleSourceType: 0, ticker: '', classCode: '', volumeBuy: 0, volumeSell: 0 } };
     await Promise.all([ stream.emulate(ownFigiAndInterval), waitMarketStreamEvent(stream, 'data') ]);
 
     assert.equal(calls.length, 1);
     assert.deepEqual(calls[ 0 ], { streamId, subscriptionId, figi, instrumentUid: figi, interval, volume: 1, waitingClose: false, candleSourceType: 0 });
 
     // другой figi
-    const anotherFigi = { candle: { streamId, subscriptionId, figi: 'another_figi', instrumentUid: 'another_figi', interval, volume: 2, waitingClose: false, candleSourceType: 0 } };
+    const anotherFigi = { candle: { streamId, subscriptionId, figi: 'another_figi', instrumentUid: 'another_figi', interval, volume: 2, waitingClose: false, candleSourceType: 0, ticker: '', classCode: '', volumeBuy: 0, volumeSell: 0 } };
     await Promise.all([ stream.emulate(anotherFigi), waitMarketStreamEvent(stream, 'data') ]);
 
     // другой interval
-    const anotherInterval = { candle: { streamId, subscriptionId, figi, instrumentUid: figi, interval: 2, volume: 3, waitingClose: false, candleSourceType: 0 } };
+    const anotherInterval = { candle: { streamId, subscriptionId, figi, instrumentUid: figi, interval: 2, volume: 3, waitingClose: false, candleSourceType: 0, ticker: '', classCode: '', volumeBuy: 0, volumeSell: 0 } };
     await Promise.all([ stream.emulate(anotherInterval), waitMarketStreamEvent(stream, 'data') ]);
 
     assert.equal(calls.length, 1);

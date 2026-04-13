@@ -1,4 +1,4 @@
-# tinkoff-invest-api
+# @makshuk/tinkoff-invest-api
 Node.js SDK для работы с [Tinkoff Invest API](https://tinkoff.github.io/investAPI/).
 
 <!-- toc -->
@@ -19,13 +19,13 @@ Node.js SDK для работы с [Tinkoff Invest API](https://tinkoff.github.i
 
 ## Установка
 ```
-npm i tinkoff-invest-api
+npm i @makshuk/tinkoff-invest-api
 ```
 
 ## Использование
 ### Подключение
 ```ts
-import { TinkoffInvestApi } from 'tinkoff-invest-api';
+import { TinkoffInvestApi } from '@makshuk/tinkoff-invest-api';
 
 // создать клиента с заданным токеном доступа
 const api = new TinkoffInvestApi({ token: '<your-token>' });
@@ -34,8 +34,8 @@ const api = new TinkoffInvestApi({ token: '<your-token>' });
 
 ### Unary-запросы
 ```ts
-import { PortfolioRequest_CurrencyRequest } from 'tinkoff-invest-api/dist/generated/operations.js';
-import { CandleInterval } from 'tinkoff-invest-api/dist/generated/marketdata.js';
+import { PortfolioRequest_CurrencyRequest } from '@makshuk/tinkoff-invest-api/dist/generated/operations.js';
+import { CandleInterval } from '@makshuk/tinkoff-invest-api/dist/generated/marketdata.js';
 
 // получить список счетов
 const { accounts } = await api.users.getAccounts({});
@@ -58,7 +58,7 @@ const { candles } = await api.marketdata.getCandles({
 ### Стримы
 Для работы со стримом сделана обертка `api.stream`:
 ```ts
-import { SubscriptionInterval } from 'tinkoff-invest-api/dist/generated/marketdata.js';
+import { SubscriptionInterval } from '@makshuk/tinkoff-invest-api/dist/generated/marketdata.js';
 
 // подписка на свечи
 const unsubscribe = await api.stream.market.candles({
@@ -87,7 +87,7 @@ await api.stream.market.cancel();
 ```
 > Примечание: со стримом можно работать и напрямую через `api.marketdataStream`. Но там `AsyncIterable`, которые менее удобны (имхо)
 
-По умолчанию стрим автоматически переподключается при потере соединения ([#4](https://github.com/vitalets/tinkoff-invest-api/issues/4)). Чтобы это отключить, установите `api.stream.market.options.autoReconnect = false`.
+По умолчанию стрим автоматически переподключается при потере соединения. Чтобы это отключить, установите `api.stream.market.options.autoReconnect = false`.
 
 Стримы доступны по следующим сущностям:
 * `.candles(request, handler)`
@@ -100,8 +100,8 @@ await api.stream.market.cancel();
 Для бесшовной работы со счетами в бою и песочнице сделан универсальный интерфейс `TinkoffAccount`.
 
 ```ts
-import { TinkoffAccount, RealAccount, SandboxAccount } from 'tinkoff-invest-api';
-import { OrderDirection, OrderType } from 'tinkoff-invest-api/dist/generated/orders.js';
+import { TinkoffAccount, RealAccount, SandboxAccount } from '@makshuk/tinkoff-invest-api';
+import { OrderDirection, OrderType } from '@makshuk/tinkoff-invest-api/dist/generated/orders.js';
 
 // создать экземпляр счета: боевого или в песочнице
 const account: TinkoffAccount = process.env.USE_REAL_ACCOUNT
@@ -125,13 +125,13 @@ const order = await account.postOrder({
 });
 ```
 
-Все методы универсального счета можно посмотреть [тут](https://github.com/vitalets/tinkoff-invest-api/blob/main/src/account/real.ts).
+Все методы универсального счета можно посмотреть [тут](https://github.com/makshuk/tinkoff-invest-api/blob/main/src/account/real.ts).
 
 ### Кеширование свечей
 Кеширование свечей позволяет сократить кол-во запросов к API, а также удобно получать нужное кол-во свечей за любой период времени (в исходном API есть ограничения на диапазоны дат запроса). Для загрузки свечей с учетом кеша используется класс `CandlesLoader`:
 ```ts
-import { TinkoffInvestApi, CandlesLoader } from 'tinkoff-invest-api';
-import { CandleInterval } from 'tinkoff-invest-api/dist/generated/marketdata.js';
+import { TinkoffInvestApi, CandlesLoader } from '@makshuk/tinkoff-invest-api';
+import { CandleInterval } from '@makshuk/tinkoff-invest-api/dist/generated/marketdata.js';
 
 const api = new TinkoffInvestApi({ token: '<your-token>' });
 
@@ -176,7 +176,7 @@ const { candles } = await candlesLoader.getCandles({
 ### Хелперы
 Для более удобной работы есть несколько хелперов:
 ```ts
-import { Helpers } from 'tinkoff-invest-api';
+import { Helpers } from '@makshuk/tinkoff-invest-api';
 
 /**
  * Переводит число в Quotation.
@@ -227,10 +227,10 @@ DEBUG=tinkoff-invest-api:* node robot.js
 ## История изменений
 
 #### 7.0.1
-* Исправлена опечатка при получении лимитов ([#14](https://github.com/vitalets/tinkoff-invest-api/issues/14), [#26](https://github.com/vitalets/tinkoff-invest-api/pull/26), [@devoln](https://github.com/devoln))
+* Исправлена опечатка при получении лимитов (issue #14, PR #26, [@devoln](https://github.com/devoln))
 
 #### 7.0.0
-* Обновление версии протокола до 1.24 ([#24](https://github.com/vitalets/tinkoff-invest-api/issues/24), [@Jokky](https://github.com/Jokky))
+* Обновление версии протокола до 1.24 (issue #24, [@Jokky](https://github.com/Jokky))
 
 ## Лицензия
-MIT @ [Vitaliy Potapov](https://github.com/vitalets)
+MIT @ [makshuk](https://github.com/makshuk)

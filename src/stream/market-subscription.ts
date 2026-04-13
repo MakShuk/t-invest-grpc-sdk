@@ -1,7 +1,6 @@
 /**
  * Класс подписки в стриме market.
  * Позволяет ожидать результата подписки и вызывать обработчики для figi, заданных при подписке.
- * See: https://github.com/vitalets/tinkoff-invest-api/issues/6
  */
 import {
   Candle,

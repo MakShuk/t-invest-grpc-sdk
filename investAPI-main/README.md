@@ -70,7 +70,7 @@ API реализован на быстром, удобном и функцион
 * [golang](https://github.com/ssummers02/invest-api-go-sdk)
 * nodejs
   - [betslus1/unofficial-tinkoff-invest-api_v2-lazy-sdk-NODEJS](https://github.com/betslus1/unofficial-tinkoff-invest-api_v2-lazy-sdk-NODEJS)
-  - [vitalets/tinkoff-invest-api](https://github.com/vitalets/tinkoff-invest-api)
+  - [makshuk/tinkoff-invest-api](https://github.com/makshuk/tinkoff-invest-api)
 * [golang](https://github.com/vodolaz095/go-investAPI)
 * [haskell](https://github.com/nickmi11er/tinkoff-invest-haskell)
 * [php](https://github.com/metaseller/tinkoff-invest-api-v2-php)
