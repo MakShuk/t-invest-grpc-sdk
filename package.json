@@ -61,7 +61,7 @@
   "author": "makshuk",
   "repository": {
     "type": "git",
-    "url": "git://github.com/makshuk/tinkoff-invest-api.git"
+    "url": "git://github.com/MakShuk/t-invest-grpc-sdk.git"
   },
   "keywords": [
     "tinkoff",
