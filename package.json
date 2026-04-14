@@ -63,6 +63,9 @@
     "type": "git",
     "url": "git://github.com/MakShuk/t-invest-grpc-sdk.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "tinkoff",
     "invest",
