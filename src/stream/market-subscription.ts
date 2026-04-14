@@ -16,10 +16,11 @@ import {
   SubscriptionStatus,
   Trade,
   TradeSubscription,
-  TradingStatus
-} from '../generated/marketdata.js';
+  TradingStatus,
+} from "../generated/marketdata.js";
 
-type ResponseSubscription = CandleSubscription
+type ResponseSubscription =
+  | CandleSubscription
   | TradeSubscription
   | OrderBookSubscription
   | LastPriceSubscription
@@ -27,12 +28,12 @@ type ResponseSubscription = CandleSubscription
 type ResponseData = Candle | Trade | OrderBook | LastPrice | TradingStatus;
 
 type MarketSubscriptionOptions<S, D> = {
-  buildRequest: (subscriptionAction: SubscriptionAction) => MarketDataRequest,
-  buildResponse: (res: MarketDataResponse) => UniversalMarketResponse<S, D>,
-  dataHandler: (data: D) => unknown,
+  buildRequest: (subscriptionAction: SubscriptionAction) => MarketDataRequest;
+  buildResponse: (res: MarketDataResponse) => UniversalMarketResponse<S, D>;
+  dataHandler: (data: D) => unknown;
   // массив ключей под данным в запросе (по ним матчим ответы на нужный обработчик)
-  requestKeys: string[],
-}
+  requestKeys: string[];
+};
 
 /**
  * Универсальный ответ (одинаковые поля для разных типов подписок)
@@ -45,9 +46,12 @@ export type UniversalMarketResponse<S, D> = {
   data?: D;
   // ключ данных в ответе, по которому определяем, что данные для нужного обработчика
   dataKey?: string;
-}
+};
 
-export class MarketSubscription<S extends ResponseSubscription, D extends ResponseData> {
+export class MarketSubscription<
+  S extends ResponseSubscription,
+  D extends ResponseData,
+> {
   protected waitingStatusResolve?: () => unknown;
   protected waitingStatusReject?: (error: Error) => unknown;
 
@@ -78,12 +82,21 @@ export class MarketSubscription<S extends ResponseSubscription, D extends Respon
   }
 
   // eslint-disable-next-line complexity
-  protected statusHandler({ subscriptions, subscriptionKeys, trackingId }: UniversalMarketResponse<S, D>) {
+  protected statusHandler({
+    subscriptions,
+    subscriptionKeys,
+    trackingId,
+  }: UniversalMarketResponse<S, D>) {
     if (!this.waitingStatusResolve || !this.waitingStatusReject) return;
     if (!subscriptions || !subscriptionKeys) return;
-    if (subscriptionKeys.sort().join() !== this.options.requestKeys.sort().join()) return;
-    const errorSubscriptions = subscriptions
-      .filter(s => s.subscriptionStatus !== SubscriptionStatus.SUBSCRIPTION_STATUS_SUCCESS);
+    if (
+      subscriptionKeys.sort().join() !== this.options.requestKeys.sort().join()
+    )
+      return;
+    const errorSubscriptions = subscriptions.filter(
+      (s) =>
+        s.subscriptionStatus !== SubscriptionStatus.SUBSCRIPTION_STATUS_SUCCESS,
+    );
     if (errorSubscriptions.length) {
       const error = this.buildSubscriptionError(errorSubscriptions, trackingId);
       this.waitingStatusReject(error);
@@ -99,12 +112,15 @@ export class MarketSubscription<S extends ResponseSubscription, D extends Respon
     }
   }
 
-  protected buildSubscriptionError(errorSubscriptions: S[], trackingId?: string) {
-    const lines = errorSubscriptions.map(s => `${s.figi}: status ${s.subscriptionStatus}`);
-    return new Error([
-      'Subscription error:',
-      ...lines,
-      `TrackingId: ${trackingId}`,
-    ].join('\n'));
+  protected buildSubscriptionError(
+    errorSubscriptions: S[],
+    trackingId?: string,
+  ) {
+    const lines = errorSubscriptions.map(
+      (s) => `${s.figi}: status ${s.subscriptionStatus}`,
+    );
+    return new Error(
+      ["Subscription error:", ...lines, `TrackingId: ${trackingId}`].join("\n"),
+    );
   }
 }

@@ -8,19 +8,25 @@ import {
   Channel,
   Metadata,
   ChannelCredentials,
-  ChannelOptions
-} from 'nice-grpc';
-import { errorMiddleware, TinkoffApiError } from './api-error.js';
-import { Helpers } from './helpers.js';
-import { MarketStream } from './stream/market.js';
-import { InstrumentsServiceDefinition } from './generated/instruments.js';
-import { MarketDataServiceDefinition, MarketDataStreamServiceDefinition } from './generated/marketdata.js';
-import { OperationsServiceDefinition } from './generated/operations.js';
-import { OrdersServiceDefinition, OrdersStreamServiceDefinition } from './generated/orders.js';
-import { SandboxServiceDefinition } from './generated/sandbox.js';
-import { StopOrdersServiceDefinition } from './generated/stoporders.js';
-import { UsersServiceDefinition } from './generated/users.js';
-import { TradesStream } from './stream/trades.js';
+  ChannelOptions,
+} from "nice-grpc";
+import { errorMiddleware, TinkoffApiError } from "./api-error.js";
+import { Helpers } from "./helpers.js";
+import { MarketStream } from "./stream/market.js";
+import { InstrumentsServiceDefinition } from "./generated/instruments.js";
+import {
+  MarketDataServiceDefinition,
+  MarketDataStreamServiceDefinition,
+} from "./generated/marketdata.js";
+import { OperationsServiceDefinition } from "./generated/operations.js";
+import {
+  OrdersServiceDefinition,
+  OrdersStreamServiceDefinition,
+} from "./generated/orders.js";
+import { SandboxServiceDefinition } from "./generated/sandbox.js";
+import { StopOrdersServiceDefinition } from "./generated/stoporders.js";
+import { UsersServiceDefinition } from "./generated/users.js";
+import { TradesStream } from "./stream/trades.js";
 
 export { TinkoffApiError };
 
@@ -35,17 +41,20 @@ export interface TinkoffInvestApiOptions {
   channelOptions?: ChannelOptions;
 }
 
-const defaults: Required<Pick<TinkoffInvestApiOptions, 'appName' | 'endpoint' | 'channelOptions' >> = {
-  endpoint: 'invest-public-api.tinkoff.ru:443',
-  appName: '',
+const defaults: Required<
+  Pick<TinkoffInvestApiOptions, "appName" | "endpoint" | "channelOptions">
+> = {
+  endpoint: "invest-public-api.tinkoff.ru:443",
+  appName: "",
   // Increased limits allow working with large API payloads.
   channelOptions: {
-    'grpc.max_receive_message_length': 1024 * 1024 * 100,
-    'grpc.max_send_message_length': 1024 * 1024 * 100,
-  }
+    "grpc.max_receive_message_length": 1024 * 1024 * 100,
+    "grpc.max_send_message_length": 1024 * 1024 * 100,
+  },
 };
 
-type ServiceDefinition = typeof InstrumentsServiceDefinition
+type ServiceDefinition =
+  | typeof InstrumentsServiceDefinition
   | typeof MarketDataServiceDefinition
   | typeof MarketDataStreamServiceDefinition
   | typeof OperationsServiceDefinition
@@ -59,8 +68,9 @@ export class TinkoffInvestApi {
   options: TinkoffInvestApiOptions & typeof defaults;
   protected channel: Channel;
   protected metadata: Metadata;
-  protected clients: Map<ServiceDefinition, Client<ServiceDefinition>> = new Map();
-  protected streamClients?: { market: MarketStream, trades: TradesStream };
+  protected clients: Map<ServiceDefinition, Client<ServiceDefinition>> =
+    new Map();
+  protected streamClients?: { market: MarketStream; trades: TradesStream };
 
   constructor(options: TinkoffInvestApiOptions) {
     this.options = Object.assign({}, defaults, options);
@@ -69,16 +79,36 @@ export class TinkoffInvestApi {
   }
 
   helpers = Helpers;
-  get instruments() { return this.getOrCreateClient(InstrumentsServiceDefinition); }
-  get marketdata() { return this.getOrCreateClient(MarketDataServiceDefinition); }
-  get marketdataStream() { return this.getOrCreateClient(MarketDataStreamServiceDefinition); }
-  get operations() { return this.getOrCreateClient(OperationsServiceDefinition); }
-  get orders() { return this.getOrCreateClient(OrdersServiceDefinition); }
-  get ordersStream() { return this.getOrCreateClient(OrdersStreamServiceDefinition); }
-  get sandbox() { return this.getOrCreateClient(SandboxServiceDefinition); }
-  get stoporders() { return this.getOrCreateClient(StopOrdersServiceDefinition); }
-  get users() { return this.getOrCreateClient(UsersServiceDefinition); }
-  get stream() { return this.getOrCreateStream(); }
+  get instruments() {
+    return this.getOrCreateClient(InstrumentsServiceDefinition);
+  }
+  get marketdata() {
+    return this.getOrCreateClient(MarketDataServiceDefinition);
+  }
+  get marketdataStream() {
+    return this.getOrCreateClient(MarketDataStreamServiceDefinition);
+  }
+  get operations() {
+    return this.getOrCreateClient(OperationsServiceDefinition);
+  }
+  get orders() {
+    return this.getOrCreateClient(OrdersServiceDefinition);
+  }
+  get ordersStream() {
+    return this.getOrCreateClient(OrdersStreamServiceDefinition);
+  }
+  get sandbox() {
+    return this.getOrCreateClient(SandboxServiceDefinition);
+  }
+  get stoporders() {
+    return this.getOrCreateClient(StopOrdersServiceDefinition);
+  }
+  get users() {
+    return this.getOrCreateClient(UsersServiceDefinition);
+  }
+  get stream() {
+    return this.getOrCreateStream();
+  }
 
   isBacktest = false;
 
@@ -93,8 +123,10 @@ export class TinkoffInvestApi {
   private getOrCreateClient<T extends ServiceDefinition>(service: T) {
     let client = this.clients.get(service) as Client<T>;
     if (!client) {
-      const defaultCallOptions = { '*': { metadata: this.metadata } };
-      client = createClientFactory().use(errorMiddleware).create(service, this.channel, defaultCallOptions);
+      const defaultCallOptions = { "*": { metadata: this.metadata } };
+      client = createClientFactory()
+        .use(errorMiddleware)
+        .create(service, this.channel, defaultCallOptions);
       this.clients.set(service, client as Client<ServiceDefinition>);
     }
     return client as Client<T>;
@@ -112,8 +144,8 @@ export class TinkoffInvestApi {
 
   private createDefaultMetadata() {
     return new Metadata({
-      'Authorization': `Bearer ${this.options.token}`,
-      'x-app-name': this.options.appName,
+      Authorization: `Bearer ${this.options.token}`,
+      "x-app-name": this.options.appName,
     });
   }
 }
