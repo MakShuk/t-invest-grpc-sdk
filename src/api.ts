@@ -18,7 +18,10 @@ import {
   MarketDataServiceDefinition,
   MarketDataStreamServiceDefinition,
 } from "./generated/marketdata.js";
-import { OperationsServiceDefinition } from "./generated/operations.js";
+import {
+  OperationsServiceDefinition,
+  OperationsStreamServiceDefinition,
+} from "./generated/operations.js";
 import {
   OrdersServiceDefinition,
   OrdersStreamServiceDefinition,
@@ -58,6 +61,7 @@ type ServiceDefinition =
   | typeof MarketDataServiceDefinition
   | typeof MarketDataStreamServiceDefinition
   | typeof OperationsServiceDefinition
+  | typeof OperationsStreamServiceDefinition
   | typeof OrdersServiceDefinition
   | typeof OrdersStreamServiceDefinition
   | typeof SandboxServiceDefinition
@@ -90,6 +94,9 @@ export class TinkoffInvestApi {
   }
   get operations() {
     return this.getOrCreateClient(OperationsServiceDefinition);
+  }
+  get operationsStream() {
+    return this.getOrCreateClient(OperationsStreamServiceDefinition);
   }
   get orders() {
     return this.getOrCreateClient(OrdersServiceDefinition);
